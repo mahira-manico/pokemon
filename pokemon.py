@@ -6,6 +6,7 @@ class Pokemon:
     def __init__(self,pokemon_id,all_data):
         file=all_data[str(pokemon_id)]
         self.id=pokemon_id
+        self.xp=0
         self.load_attributes(file)
 
     def load_attributes(self,file):
@@ -41,6 +42,26 @@ class Pokemon:
             self.id=self.evolution_id
             new_file=new_data[str(self.evolution_id)]
             self.load_attributes(new_file)
+            return True
+        return False
+    
+
+    def raise_xp_level(self,new_data):
+        self.xp+=10
+        if self.xp>=100:
+           self.level+=1
+           self.xp=0
+           self.hp+=5
+           self.hp_max+=5
+           self.attack+=3
+           self.defense+=3
+           self.evolve(new_data)
+    
+    def take_damage(self,damage):
+        total_damage=max(0,damage-self.defense)
+        self.hp-=total_damage
+
+    
     
     
 
