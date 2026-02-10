@@ -57,8 +57,8 @@ class Fight:
     def attack_power(self,attacker,target):
        attack=random.randint(1,10)
        if attack>1:
-        attack_type=attacker.type[0]
-        def_type=target.type[0]
+        attack_type=attacker.type
+        def_type=target.type
         multiplicator=self.damage_mutliplying(attack_type,def_type)
         total_damage=attacker.attack*multiplicator
         target.take_damage(total_damage)
@@ -66,7 +66,11 @@ class Fight:
         print("Oups! Attack missed")
 
     def damage_mutliplying(self,attacker_type,defender_type):
-        return TYPE_DAMAGE.get(attacker_type,{}).get(defender_type,1)
+        total_multiplicator=1
+        for t in defender_type:       
+         bonus=TYPE_DAMAGE.get(attacker_type,{}).get(t,1)
+         total_multiplicator*=bonus
+        return total_multiplicator
 
     def fight(self, all_data):
        
