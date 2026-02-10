@@ -1,4 +1,4 @@
-import json
+
 import pygame
 
 
@@ -19,7 +19,7 @@ class Pokemon:
         self.defense=file["defense"]
         self.evolution_id=file["evolution_id"]
         self.evolution_level=file["evolution_level"]
-        self.sprite=pygame.image.load({file["sprite"]})
+        self.sprite=pygame.image.load(file["sprite"])
 
     def __str__(self):
         display=f"--Pokémon Data--\n"
