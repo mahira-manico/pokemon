@@ -1,0 +1,14 @@
+
+#screen size
+SCREEN_WIDTH=800
+SCREEN_HEIGHT=600
+
+#color repertory
+WHITE=(255,255,255)
+BLACK=(0,0,0)
+RED=(200,0,0)
+
+#font sizes
+SMALL=20
+MEDIUM=40
+LARGE=70
