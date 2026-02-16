@@ -1,22 +1,18 @@
 import pygame
 from constant import *
-from hud import *
 
-class Menu:
-   def __init__(self):
-      self.start=pygame.init()
-      self.screen=pygame.display.set_mode(SCREEN_WIDTH,SCREEN_HEIGHT)
-      self.caption=pygame.display.set_caption("Pokémon")
+class Menu_screen:
+   def __init__(self,screen):
       self.font=pygame.font.SysFont("Arial",40)
-      self.running=True
       self.state="MENU"
       self.rect_play=pygame.Rect(100,200,200,50)
       self.rect_pokedex=pygame.Rect(100,300,200,50)
       self.rect_add_pokemon=pygame.Rect(100,400,200,50)
-      self.hud=Hud()
 
    def main_menu(self):
-     while self.running:
+     running=True
+     
+     while running:
       
       for event in pygame.event.get():
 
@@ -36,9 +32,10 @@ class Menu:
               self.state="LIST"
               self.running=False
 
-        return self.state
-      pygame.display.flip()
-      pygame.time.Clock().tick(60)
+     return self.state
+   pygame.display.flip()
+   pygame.time.Clock().tick(60)
+
 
            
        
