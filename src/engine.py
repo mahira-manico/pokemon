@@ -13,6 +13,7 @@ class Game:
      pygame.init()
      self.screen=pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
      self.state="MENU"
+     self.menu_screen=Menu_screen(self.screen)
      self.selection_screen=SelectionScreen(self.screen)
      self.fight_screen=FightScreen(self.screen)
      self.width=SCREEN_WIDTH
@@ -28,7 +29,16 @@ class Game:
         if event.type==pygame.QUIT:
             self.running=False
 
-        if self.state=="SELECTION":
+        if self.state=="MENU":
+           action=self.menu_screen.event_gestion(event)
+           if action=="GAME":
+              self.state=="SELECTION"
+           elif action=="POKEDEX":
+              pass
+           elif action=="LIST":
+              pass             
+
+        elif self.state=="SELECTION":
            action=self.selection_screen.event_gestion(event)
            if action=="GO_FIGHT":
               choosen_id=self.selection_screen.pokemon_choosen_id

@@ -24,7 +24,7 @@ class Pokemon:
     def __str__(self):
         display=f"--Pokémon Data--\n"
         display+=f"Name: {self.name}(lv.{self.level}\n)"
-        display+=f"Type: {"/".join(self.type)}\n"
+        display+=f"Type: {'/'.join(self.type)}\n"
         display+=f"Health: {self.hp}/{self.hp_max}\n"
         display+=f"Stats: ATK:{self.attack}/DEF: {self.defense}\n"
         if self.evolution_id:
