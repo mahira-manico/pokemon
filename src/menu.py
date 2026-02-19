@@ -11,7 +11,7 @@ class Menu_screen:
 
    def main_menu(self):
      running=True
-     
+
      while running:
       
       for event in pygame.event.get():
@@ -33,7 +33,6 @@ class Menu_screen:
               self.running=False
 
      return self.state
-   pygame.display.flip()
    pygame.time.Clock().tick(60)
 
 

@@ -1,6 +1,6 @@
 import random
 from pokemon import *
-from config import *
+from type import *
 import json
 
 class Fight:
@@ -19,7 +19,7 @@ class Fight:
     
     def catch_pokemon(self):
        catching_chances=random.randint(1,100)
-       if self.check_victory:
+       if self.check_victory():
           if catching_chances<=50:
              print("Oh no! This pokemon escaped!")
              return False
