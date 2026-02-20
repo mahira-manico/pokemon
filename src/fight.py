@@ -9,24 +9,35 @@ class Fight:
         random_id=random.choice(list(all_data.keys()))
         self.opponent=Pokemon(random_id,all_data)
     
-    def check_victory(self):
+    def check_victory(self,msg):
         if not self.opponent.is_alive():
-           print(f"{self.pokemon.name} won! {self.opponent.name} lost!")
-           return True
+           msg=f"{self.pokemon.name} won! {self.opponent.name} lost!"
+           return True,msg
         else:
-         print(f"{self.opponent.name} managed to win! You lost!")
-         return False
+           msg=f"{self.opponent.name} managed to win! You lost!"
+           return False,msg
     
     def catch_pokemon(self):
        catching_chances=random.randint(1,100)
-       if self.check_victory():
-          if catching_chances<=50:
-             print("Oh no! This pokemon escaped!")
-             return False
-          elif catching_chances>=50:
-             print("Good Job! You caught this pokemon!")
-             return True
-          
+       if catching_chances<=50:
+             msg="Oh no! This pokemon escaped!"
+             return False,msg
+       elif catching_chances>=50:
+             msg="Good Job! You caught this pokemon!"
+             return True,msg
+       
+    def potion(self):
+     if self.pokemon.is_alive():
+        if self.pokemon.hp >= self.pokemon.hp_max:  
+            msg = "Already at max HP!"
+        else:
+            self.pokemon.hp = min(self.pokemon.hp + 20, self.pokemon.hp_max)  
+            msg = f"{self.pokemon.name} used a potion! (+20 HP)"
+     else:
+        msg = "Can't use potion!"
+     return msg
+                        
+
     def save_to_pokedex(self,pokemon_to_save):
         try:
            with open("pokedex.json","r") as f:
@@ -49,21 +60,27 @@ class Fight:
         
            with open("pokedex.json","w") as f:
             json.dump(pokedex, f, indent=4)
-           print(f"{pokemon_to_save.name} have been added to pokedex!")
+           msg=f"{pokemon_to_save.name} have been added to pokedex!"
         else:
-           print(f"{pokemon_to_save.name} already exist")
+           msg=f"{pokemon_to_save.name} already exist"
+        return msg
         
 
     def attack_power(self,attacker,target):
        attack=random.randint(1,10)
        if attack>1:
-        attack_type=attacker.type
+        attack_type=attacker.type[0]
         def_type=target.type
+
         multiplicator=self.damage_mutliplying(attack_type,def_type)
-        total_damage=attacker.attack*multiplicator
+        total_damage=int(attacker.attack*multiplicator)
         target.take_damage(total_damage)
+
+        msg = f"{attacker.name} attacked! Dealt {total_damage} DMG!"
        else:
-        print("Oups! Attack missed")
+        msg="Oups! Attack missed"
+       return msg
+
 
     def damage_mutliplying(self,attacker_type,defender_type):
         total_multiplicator=1
@@ -72,21 +89,7 @@ class Fight:
          total_multiplicator*=bonus
         return total_multiplicator
 
-    def fight(self, all_data):
-       
-       while self.pokemon.is_alive() and self.opponent.is_alive():
-           self.attack_power(self.pokemon,self.opponent)
-        
-           if self.opponent.is_alive():
-               self.attack_power(self.opponent,self.pokemon)
-           
-       if self.check_victory():
-          print(f"{self.pokemon.name} is evolving!")
-          self.pokemon.raise_xp_level(all_data)
-          self.save_to_pokedex(self.opponent)
-       else:
-          return
-          
+
 
                
            

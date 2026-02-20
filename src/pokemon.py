@@ -13,10 +13,10 @@ class Pokemon:
         self.name=file["name"]
         self.type=file["type"]
         self.level=file["level"]
-        self.hp=file["hp"]
-        self.hp_max=file["hp"]
-        self.attack=file["attack"]
-        self.defense=file["defense"]
+        self.hp=int(file["hp"]* 1.5)
+        self.hp_max=int(file["hp"]* 1.5)
+        self.attack=int(file["attack"])
+        self.defense=int(file["defense"])
         self.evolution_id=file["evolution_id"]
         self.evolution_level=file["evolution_level"]
         self.sprite=pygame.image.load(file["sprite"])
@@ -51,16 +51,20 @@ class Pokemon:
         if self.xp>=100:
            self.level+=1
            self.xp=0
-           self.hp+=5
-           self.hp_max+=5
-           self.attack+=3
-           self.defense+=3
+           self.hp=int(self.hp+5)
+           self.hp_max=int(self.hp_max+5)
+           self.attack=int(self.attack+3)
+           self.defense=int(self.attack+3)
            self.evolve(new_data)
     
     def take_damage(self,damage):
-        total_damage=max(0,damage-self.defense)
-        self.hp-=total_damage
+       reduction = self.defense * 0.2
+       total_damage = max(1, damage - reduction)  
+       self.hp -= total_damage
+       self.hp = max(0, int(self.hp))
 
+      
+    
     
     
     

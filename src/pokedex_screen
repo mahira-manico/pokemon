@@ -1,0 +1,42 @@
+import pygame
+import json
+from constant import *
+
+class PokedexScreen:
+    def __init__(self, screen):
+        self.screen = screen
+        self.font = FONT2
+        self.pokemon_list = []
+        self.load_pokedex()
+    
+    def load_pokedex(self):
+        try:
+            with open("pokedex.json", "r") as f:
+                self.pokemon_list = json.load(f)
+        except FileNotFoundError:
+            self.pokemon_list = []
+    
+    def event_gestion(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                return "BACK_TO_MENU"
+        return None
+    
+    def draw(self, screen):
+        screen.fill((30, 30, 50))
+        
+        title = FONT1.render("POKEDEX", True, (255, 215, 0))
+        screen.blit(title, (300, 50))
+        
+        if not self.pokemon_list:
+            text = self.font.render("No Pokémon caught yet!", True, (255, 255, 255))
+            screen.blit(text, (250, 300))
+        else:
+            y = 150
+            for poke in self.pokemon_list:
+                text = self.font.render(f"{poke['name']} - Captured: {poke['captured']}", True, (255, 255, 255))
+                screen.blit(text, (100, y))
+                y += 40
+        
+        hint = pygame.font.SysFont("Arial", 20).render("Press ESC to go back", True, (150, 150, 150))
+        screen.blit(hint, (300, 550))

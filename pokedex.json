@@ -1,0 +1,123 @@
+[
+    {
+        "name": "Wartortle",
+        "type": [
+            "Water"
+        ],
+        "defense": 80,
+        "attack": 63,
+        "hp": -1,
+        "captured": [
+            true,
+            "Good Job! You caught this pokemon!"
+        ]
+    },
+    {
+        "name": "Spearow",
+        "type": [
+            "Normal",
+            "Flying"
+        ],
+        "defense": 30,
+        "attack": 60,
+        "hp": -40,
+        "captured": [
+            false,
+            "Oh no! This pokemon escaped!"
+        ]
+    },
+    {
+        "name": "Pidgeotto",
+        "type": [
+            "Normal",
+            "Flying"
+        ],
+        "defense": 55,
+        "attack": 60,
+        "hp": -1.0,
+        "captured": [
+            false,
+            "Oh no! This pokemon escaped!"
+        ]
+    },
+    {
+        "name": "Bulbasaur",
+        "type": [
+            "Grass",
+            "Poison"
+        ],
+        "defense": 49,
+        "attack": 49,
+        "hp": -32.0,
+        "captured": [
+            true,
+            "Good Job! You caught this pokemon!"
+        ]
+    },
+    {
+        "name": "Venusaur",
+        "type": [
+            "Grass",
+            "Poison"
+        ],
+        "defense": 83,
+        "attack": 82,
+        "hp": 0,
+        "captured": [
+            false,
+            "Oh no! This pokemon escaped!"
+        ]
+    },
+    {
+        "name": "Caterpie",
+        "type": [
+            "Bug"
+        ],
+        "defense": 35,
+        "attack": 30,
+        "hp": 0,
+        "captured": [
+            true,
+            "Good Job! You caught this pokemon!"
+        ]
+    },
+    {
+        "name": "Metapod",
+        "type": [
+            "Bug"
+        ],
+        "defense": 55,
+        "attack": 20,
+        "hp": 0,
+        "captured": [
+            true,
+            "Good Job! You caught this pokemon!"
+        ]
+    },
+    {
+        "name": "Squirtle",
+        "type": [
+            "Water"
+        ],
+        "defense": 65,
+        "attack": 48,
+        "hp": 0,
+        "captured": [
+            false,
+            "Oh no! This pokemon escaped!"
+        ]
+    },
+    {
+        "name": "Butterfree",
+        "type": [
+            "Bug"
+        ],
+        "defense": 50,
+        "attack": 45,
+        "hp": 0,
+        "captured": [
+            false,
+            "Oh no! This pokemon escaped!"
+        ]
+    }
+]
