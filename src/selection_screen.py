@@ -38,35 +38,57 @@ class SelectionScreen:
             })
      
     def event_gestion(self,event):
-        if event.type==pygame.MOUSEBUTTONDOWN:
-            mouse_position=pygame.mouse.get_pos()
+   
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_position = pygame.mouse.get_pos()
+       
             for buttons in self.buttons_pokemon:
                 if buttons["rect"].collidepoint(mouse_position):
-                    self.pokemon_choosen=buttons["data"]
-                    self.pokemon_choosen_id=buttons["id"]
+                    self.pokemon_choosen = buttons["data"]
+                    self.pokemon_choosen_id = buttons["id"]
+            
             if self.pokemon_choosen_id:
-                go_button = pygame.Rect(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 80, 120, 50)
-                if go_button.collidepoint(mouse_position):
-                  return "GO_FIGHT"
+               
+                go_button_rect = pygame.Rect(950, 550, 180, 60)
+                if go_button_rect.collidepoint(mouse_position):
+                    return "GO_FIGHT"
         return None
     
     def draw(self,screen):
-     screen.fill((20, 20, 40))  
+        screen.fill((20, 20, 40))  
    
-   
-     title = self.font_bold.render("Choose your Pokemon!", True, (255, 255, 255))
-     screen.blit(title, (200, 20))
+        title = self.font_bold.render("Choose your Pokemon!", True, (255, 255, 255))
+        screen.blit(title, (440, 20))
     
-     for button in self.buttons_pokemon:
-        screen.blit(button["image"], button["rect"])
+        for button in self.buttons_pokemon:
+            screen.blit(button["image"], button["rect"])
+            if self.pokemon_choosen_id == button["id"]:
+                pygame.draw.rect(screen, (GOLD), button["rect"], 3)  
+
+        if self.pokemon_choosen:
         
-        if self.pokemon_choosen_id == button["id"]:
-            pygame.draw.rect(screen, (GOLD), button["rect"], 3)  
+            info_box = pygame.Rect(850, 150, 380, 250)
+            pygame.draw.rect(screen, (0, 0, 0), info_box)
+            pygame.draw.rect(screen, (255, 215, 0), info_box, 3)
     
-     if self.pokemon_choosen_id:
-        go_button = pygame.Rect(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 80, 120, 50)
-        pygame.draw.rect(screen, (0, 200, 0), go_button)
-        text_go = self.font_normal.render("GO!", True, (255, 255, 255))
-        screen.blit(text_go, (go_button.x + 35, go_button.y + 10))
-
-
+            name = self.font_normal.render(f"Name: {self.pokemon_choosen['name']}", True, (255, 255, 255))
+            type_text = self.font_normal.render(f"Type: {'/'.join(self.pokemon_choosen['type'])}", True, (255, 255, 255))
+            hp_text = self.font_normal.render(f"HP: {self.pokemon_choosen['hp']}", True, (0, 255, 0))
+            atk_text = self.font_normal.render(f"ATK: {self.pokemon_choosen['attack']}", True, (255, 100, 100))
+            def_text = self.font_normal.render(f"DEF: {self.pokemon_choosen['defense']}", True, (100, 100, 255))
+ 
+            screen.blit(name, (870, 170))
+            screen.blit(type_text, (870, 210))
+            screen.blit(hp_text, (870, 250))
+            screen.blit(atk_text, (870, 290))
+            screen.blit(def_text, (870, 330))
+    
+        if self.pokemon_choosen_id:
+            go_button = pygame.Rect(950, 550, 180, 60)
+            pygame.draw.rect(screen, (0, 200, 0), go_button)
+            text_go = self.font_normal.render("FIGHT!", True, (255, 255, 255))
+            screen.blit(text_go, (go_button.x + 50, go_button.y + 15))
+  
+    def refresh(self):      
+        self.buttons_pokemon = []
+        self.load_pokemon()

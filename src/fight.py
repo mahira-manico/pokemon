@@ -29,40 +29,45 @@ class Fight:
     def potion(self):
      if self.pokemon.is_alive():
         if self.pokemon.hp >= self.pokemon.hp_max:  
-            msg = "Already at max HP!"
-        else:
-            self.pokemon.hp = min(self.pokemon.hp + 20, self.pokemon.hp_max)  
-            msg = f"{self.pokemon.name} used a potion! (+20 HP)"
-     else:
-        msg = "Can't use potion!"
+            msg="Already at max HP!"
+            
+        old_hp=self.pokemon.hp
+        self.pokemon.hp = min(self.pokemon.hp + 40, self.pokemon.hp_max) 
+        heal=self.pokemon.hp-old_hp 
+        msg = f"{self.pokemon.name} healed {heal} HP"
+
      return msg
                         
 
-    def save_to_pokedex(self,pokemon_to_save):
+    def save_to_pokedex(self,pokemon_to_save,caught):
         try:
            with open("pokedex.json","r") as f:
               pokedex=json.load(f)
         except(FileNotFoundError):
            pokedex=[]
         
-        exist=any(p["name"]==pokemon_to_save.name for p in pokedex)
+        for p in pokedex:
+         if p["name"] == pokemon_to_save.name:
+            if caught: p["captured"] = True
+            with open("pokedex.json", "w") as f:
+                json.dump(pokedex, f, indent=4)
+            return f"{pokemon_to_save.name} updated!"
 
-        if not exist:
-           new_data={
-              "name":pokemon_to_save.name,
-              "type":pokemon_to_save.type,
-              "defense":pokemon_to_save.defense,
-              "attack":pokemon_to_save.attack,
-              "hp":pokemon_to_save.hp,
-              "captured":self.catch_pokemon()
-          }
-           pokedex.append(new_data)
+        new_data={
+            "name":pokemon_to_save.name,
+            "type":pokemon_to_save.type,
+            "defense":pokemon_to_save.defense,
+            "attack":pokemon_to_save.attack,
+            "hp":pokemon_to_save.hp,
+            "sprite":pokemon_to_save.sprite_path,
+            "captured":caught
+         }
+         
+        pokedex.append(new_data)
         
-           with open("pokedex.json","w") as f:
+        with open("pokedex.json","w") as f:
             json.dump(pokedex, f, indent=4)
-           msg=f"{pokemon_to_save.name} have been added to pokedex!"
-        else:
-           msg=f"{pokemon_to_save.name} already exist"
+        msg=f"{pokemon_to_save.name} have been added to pokedex!"
         return msg
         
 
@@ -71,14 +76,21 @@ class Fight:
        if attack>1:
         attack_type=attacker.type[0]
         def_type=target.type
-
         multiplicator=self.damage_mutliplying(attack_type,def_type)
-        total_damage=int(attacker.attack*multiplicator)
+
+        base_damage=(attacker.attack/max(1, target.defense)) * 10
+        total_damage=int(base_damage*multiplicator)
         target.take_damage(total_damage)
 
-        msg = f"{attacker.name} attacked! Dealt {total_damage} DMG!"
+        if multiplicator>1:
+           msg= f"{attacker.name} attacked! {total_damage} DMG! It's super effective"
+        elif multiplicator<1:
+           msg=f"{attacker.name} attacked! {total_damage} DMG! It's not very effective"
+        else:
+           msg=f"{attacker.name} attacked! {total_damage} DMG!"
+
        else:
-        msg="Oups! Attack missed"
+         msg="Oups! Attack missed"
        return msg
 
 
