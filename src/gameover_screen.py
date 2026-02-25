@@ -19,12 +19,12 @@ class GameOverScreen:
         title_color = (255, 215, 0) if is_victory else (255, 70, 70)
    
         lines = message.split('\n')
-        y = 300
+        y = 200
         for line in lines:
             text_surf = self.font_normal.render(line, True, (255, 255, 255))
             text_rect = text_surf.get_rect(center=(640, y))
             self.screen.blit(text_surf, text_rect)
-            y += 55
+            y += 35
             
 
         bar_rect = pygame.Rect(0, 620, 1280, 100)

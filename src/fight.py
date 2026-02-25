@@ -8,7 +8,7 @@ class Fight:
         self.pokemon=pokemon
         random_id=random.choice(list(all_data.keys()))
         self.opponent=Pokemon(random_id,all_data)
-    
+
     def check_victory(self,msg):
         if not self.opponent.is_alive():
            msg=f"{self.pokemon.name} won! {self.opponent.name} lost!"
@@ -51,7 +51,6 @@ class Fight:
             if caught: p["captured"] = True
             with open("pokedex.json", "w") as f:
                 json.dump(pokedex, f, indent=4)
-            return f"{pokemon_to_save.name} updated!"
 
         new_data={
             "name":pokemon_to_save.name,

@@ -26,30 +26,41 @@ class PokedexScreen:
         return None
     
     def draw(self, screen):
-
-     screen.blit(self.background,(0,0))
-    
-     if not self.pokemon_list:
-        text = self.font.render("No Pokémon seen yet!", True, (255, 255, 255))
-        screen.blit(text, (500, 300))
-     else:
-        y = 120
-        for poke in self.pokemon_list:
-           
-            try:
-                img = pygame.image.load(poke['sprite']).convert_alpha()
-                img = pygame.transform.scale(img, (60, 60))
-              
-                if not poke['captured']:
-                    img.fill((50, 50, 50), special_flags=pygame.BLEND_RGB_MULT)
-                screen.blit(img, (150, y - 10))
-            except:
-                pass 
-
+        screen.blit(self.background, (0, 0))
+        
+        if not self.pokemon_list:
+            text = self.font.render("No Pokémon seen yet!", True, (255, 255, 255))
+            screen.blit(text, (500, 300))
+        else:
           
-            color = (0, 255, 0) if poke['captured'] else (150, 150, 150)
-            status = "CAPTURED" if poke['captured'] else "SEEN"
+            margin_x = 100
+            margin_y = 120
+            column_gap = 350 
+            row_gap = 80   
+            items_per_column = 7 
+            for index, poke in enumerate(self.pokemon_list):
+             
+                col = index // items_per_column
+                row = index % items_per_column
+                
+                x = margin_x + (col * column_gap)
+                y = margin_y + (row * row_gap)
+
+              
+                if x > 1100: continue 
+
             
-            name_txt = self.font.render(f"{poke['name']} - {status}", True, color)
-            screen.blit(name_txt, (230, y))
-            y += 70
+                try:
+                    img = pygame.image.load(poke['sprite']).convert_alpha()
+                    img = pygame.transform.scale(img, (60, 60))
+                    if not poke.get('captured', False):
+                        img.fill((50, 50, 50), special_flags=pygame.BLEND_RGB_MULT)
+                    screen.blit(img, (x, y - 10))
+                except:
+                    pass 
+
+                color = (0, 255, 0) if poke.get('captured', False) else (150, 150, 150)
+                status = "CAPTURED" if poke.get('captured', False) else "SEEN"
+                
+                name_txt = self.font.render(f"{poke['name']} - {status}", True, color)
+                screen.blit(name_txt, (x + 70, y))

@@ -466,19 +466,6 @@
     "evolution_id": null,
     "evolution_level": null,
     "sprite": "assets/images/jigglypuff.png"
-  },
-  "37": {
-    "name": "Mama",
-    "type": [
-      "Fire"
-    ],
-    "level": 1,
-    "hp": 50,
-    "hp_max": 50,
-    "attack": 60,
-    "defense": 80,
-    "evolution_id": null,
-    "evolution_level": null,
-    "sprite": "assets/images/default.png"
   }
+ 
 }

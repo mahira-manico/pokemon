@@ -1,4 +1,7 @@
 import pygame
+import json
+import shutil
+import os
 import sys
 from fight import Fight
 from menu import Menu_screen
@@ -15,15 +18,17 @@ class Game:
     def __init__(self):
      pygame.init()
 
-     with open("pokedex.json", "w") as f:
-            import json
-            json.dump([], f)
-
+     self.save_path = "data/save_data.json"
+     self.base_path = "data/pokemon.json"      
+       
+     if not os.path.exists(self.save_path):
+            shutil.copy(self.base_path, self.save_path)
+      
      self.screen=pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
      self.state="MENU"
      self.game_over_message = ""
      self.menu_screen=Menu_screen(self.screen)
-     self.selection_screen=SelectionScreen(self.screen)
+     self.selection_screen=SelectionScreen(self.screen,self.save_path)
      self.add_pokemon_screen=AddPokemonScreen(self.screen)
      self.game_over_screen=GameOverScreen(self.screen)
      self.width=SCREEN_WIDTH
@@ -32,9 +37,33 @@ class Game:
      self.clock=pygame.time.Clock()
      self.running=True
      self.pokemon=None
-     self.draw_menu=Menu_screen(self.screen)
      self.draw_fight=FightScreen(self.screen)
      self.pokedex_screen = PokedexScreen(self.screen)
+
+   
+    def save_pokemon_progress(self):
+        pid = str(self.selection_screen.pokemon_choosen_id)
+      
+        if pid in self.selection_screen.all_pokemon:
+           self.selection_screen.all_pokemon[pid].update({
+            "level": self.pokemon.level,
+            "xp": self.pokemon.xp,
+            "hp": self.pokemon.hp_max,
+            "hp_max": self.pokemon.hp_max,
+            "attack": self.pokemon.attack,
+            "defense": self.pokemon.defense,
+            "name": self.pokemon.name,
+            "sprite": self.pokemon.sprite_path
+             })
+           
+           if self.pokemon.evolution_id:
+               self.selection_screen.all_pokemon[pid]["evolution_id"] = self.pokemon.evolution_id
+               self.selection_screen.all_pokemon[pid]["evolution_level"] = self.pokemon.evolution_level
+       
+           with open(self.save_path, "w") as f:
+                json.dump(self.selection_screen.all_pokemon, f, indent=2)
+        
+        self.selection_screen.refresh()
     
     
     def event(self):
@@ -64,7 +93,10 @@ class Game:
 
         elif self.state=="SELECTION":
            action=self.selection_screen.event_gestion(event)
-           if action=="GO_FIGHT":
+
+           if action == "BACK_TO_MENU":
+            self.state = "MENU"
+           elif action=="GO_FIGHT":
               choosen_id=self.selection_screen.pokemon_choosen_id
               all_data=self.selection_screen.all_pokemon
               self.pokemon=Pokemon(choosen_id,all_data)
@@ -82,28 +114,36 @@ class Game:
               
              player_msg = self.fight.attack_power(self.pokemon, self.fight.opponent) 
              self.draw_fight.message = player_msg  
+             self.draw_fight.shake_intensity = 10
     
   
              if not self.fight.opponent.is_alive():
+              self.draw_fight.shake_intensity = 0
               old_level = self.pokemon.level
-              
-              self.pokemon.xp+=10
-              self.pokemon.raise_xp_level(self.selection_screen.all_pokemon)
-              pid = str(self.pokemon.id)
-              self.selection_screen.all_pokemon[pid]["xp"] = self.pokemon.xp
-              self.selection_screen.all_pokemon[pid]["level"] = self.pokemon.level
+              old_name=self.pokemon.name
 
-              xp_msg = f"\n{self.pokemon.name} gained 10 XP!"
+              self.pokemon.raise_xp_level(self.selection_screen.all_pokemon)
+              self.save_pokemon_progress()
+
+              xp_msg = f"\n{old_name} gained 50 XP!"
+
+              lvl_msg=""
               if self.pokemon.level > old_level:
-               xp_msg += f"\nLEVEL UP! {self.pokemon.name} is now Lv.{self.pokemon.level}!"
-                      
+               lvl_msg = f"\nLEVEL UP! {self.pokemon.name} is now Lv.{self.pokemon.level}!"
+
+              evolve_msg = ""
+              if self.pokemon.name != old_name:
+                  evolve_msg = f"\nWHAT? {old_name} evolved into {self.pokemon.name}!"
+
               caught, catch_msg = self.fight.catch_pokemon()
          
+              self.game_over_message = f"{old_name} won!\n{catch_msg}\n{xp_msg}"
+              if lvl_msg: self.game_over_message += f"\n{lvl_msg}"
+              if evolve_msg: self.game_over_message += f"\n{evolve_msg}"
+                
               if caught:
-               save_msg = self.fight.save_to_pokedex(self.fight.opponent,caught)
-               self.game_over_message = f"{self.pokemon.name} won!\n{catch_msg}\n{save_msg}"
-              else:
-               self.game_over_message = f"{self.pokemon.name} won!\n{catch_msg}{xp_msg}"
+                 save_msg = self.fight.save_to_pokedex(self.fight.opponent, caught)
+                 self.game_over_message += f"\n{save_msg}"
       
               self.state = "GAME_OVER"
     
@@ -112,6 +152,7 @@ class Game:
                self.draw_fight.message = f"{player_msg}\n{opponent_msg}"  
         
                if not self.pokemon.is_alive():
+                self.draw_fight.shake_intensity = 0
                 self.game_over_message = f"{self.pokemon.name} lost..."
                 self.state = "GAME_OVER"
 
@@ -165,6 +206,8 @@ class Game:
     def run(self):
      while self.running:
         self.event()
+        if self.state == "FIGHT":
+           self.draw_fight.update()
         self.draw()
         self.clock.tick(60)
 

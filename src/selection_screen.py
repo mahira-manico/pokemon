@@ -3,8 +3,9 @@ import pygame
 from constant import *
 
 class SelectionScreen:
-    def __init__(self,screen):
+    def __init__(self,screen,file_to_load):
         self.screen=screen
+        self.data_file = file_to_load
         self.font_bold=FONT1
         self.font_normal=FONT2
         self.pokemon_choosen=None
@@ -14,28 +15,39 @@ class SelectionScreen:
         self.load_pokemon()
 
     def load_pokemon(self):
-        with open("data/pokemon.json", "r") as file:
+        with open(self.data_file, "r") as file:
             self.all_pokemon=json.load(file)
-        for index, (pokemon_id,pokemon) in enumerate(self.all_pokemon.items()):
-            column=6
-            margin_x=50
-            margin_y=100
-            space_between=100
-            actual_column=index%column
-            actual_lign=index//column
-            x=margin_x+(actual_column*space_between)
-            y=margin_y+(actual_lign*space_between)
-            rect=pygame.Rect(x,y,64,64)
-            image_path=pokemon["sprite"]
-            image=pygame.image.load(image_path)
-            image = pygame.transform.scale(image, (64, 64))
-            rect = pygame.Rect(x, y, 64, 64)
-            self.buttons_pokemon.append({
-                "rect":rect,
-                "image":image,
-                "id":pokemon_id,
-                "data":pokemon
-            })
+
+        captured_names = []
+        try:
+            with open("pokedex.json", "r") as f:
+                pokedex_data = json.load(f)
+                captured_names = [p['name'] for p in pokedex_data if p.get('captured')]
+        except (FileNotFoundError, json.JSONDecodeError):
+             captured_names = []
+
+        self.buttons_pokemon = []
+        index_display = 0
+        for pokemon_id, pokemon in self.all_pokemon.items():
+         if index_display == 0 or pokemon["name"] in captured_names:
+           column = 6
+           margin_x, margin_y = 50, 100
+           space_between = 100
+                
+           x = margin_x + (index_display % column * space_between)
+           y = margin_y + (index_display // column * space_between)
+                
+           image = pygame.image.load(pokemon["sprite"])
+           image = pygame.transform.scale(image, (64, 64))
+           rect = pygame.Rect(x, y, 64, 64)
+                
+           self.buttons_pokemon.append({
+                "rect": rect,
+                "image": image,
+                "id": pokemon_id,
+                "data": pokemon
+             })
+           index_display += 1
      
     def event_gestion(self,event):
    
@@ -52,6 +64,9 @@ class SelectionScreen:
                 go_button_rect = pygame.Rect(950, 550, 180, 60)
                 if go_button_rect.collidepoint(mouse_position):
                     return "GO_FIGHT"
+                
+            if hasattr(self, 'back_button_rect') and self.back_button_rect.collidepoint(mouse_position):
+             return "BACK_TO_MENU"
         return None
     
     def draw(self,screen):
@@ -59,6 +74,14 @@ class SelectionScreen:
    
         title = self.font_bold.render("Choose your Pokemon!", True, (255, 255, 255))
         screen.blit(title, (440, 20))
+
+        self.back_button_rect = pygame.Rect(50, 620, 150, 50)
+        pygame.draw.rect(screen, (100, 100, 100), self.back_button_rect, border_radius=10)
+        pygame.draw.rect(screen, (255, 255, 255), self.back_button_rect, 2, border_radius=10)
+    
+        back_text = self.font_normal.render("BACK", True, (255, 255, 255))
+        text_rect = back_text.get_rect(center=self.back_button_rect.center)
+        screen.blit(back_text, text_rect)
     
         for button in self.buttons_pokemon:
             screen.blit(button["image"], button["rect"])
@@ -89,6 +112,9 @@ class SelectionScreen:
             text_go = self.font_normal.render("FIGHT!", True, (255, 255, 255))
             screen.blit(text_go, (go_button.x + 50, go_button.y + 15))
   
-    def refresh(self):      
+    def refresh(self):   
+        with open("data/pokemon.json", "r") as file:
+            self.all_pokemon = json.load(file)
+
         self.buttons_pokemon = []
         self.load_pokemon()

@@ -41,15 +41,16 @@ class Pokemon:
     
     def evolve(self,new_data):
         if self.evolution_level is not None and self.level>=self.evolution_level and self.evolution_id is not None:
-            self.id=self.evolution_id
-            new_file=new_data[str(self.evolution_id)]
-            self.load_attributes(new_file)
-            return True
+            new_id=str(self.evolution_id)
+            if new_id in new_data:
+             new_form_data = new_data[new_id]
+             self.load_attributes(new_form_data)
+             return True
         return False
     
 
     def raise_xp_level(self,new_data):
-        self.xp+=100
+        self.xp+=50
         if self.xp>=100:
            self.level+=1
            self.xp=0
