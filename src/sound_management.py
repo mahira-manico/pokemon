@@ -1,14 +1,28 @@
+"""
+sound_management.py
+Centralized sound system manager. Handles background music, 
+UI sound effects, and dynamic Pokémon cries based on their types.
+"""
+
 import pygame
 import random
 
 class SoundManager:
+    """
+    Manages all audio assets. Supports playing specific sound effects, 
+    looping background music, and generating type-based battle sounds.
+    """
     def __init__(self):
+        """Initializes the mixer and pre-loads all sound assets into memory."""
         pygame.mixer.init()
         
-        self.pokemon_cries = {
+        # Specific cry for Pikachu
+        self.pokemon_cries={
             "Pikachu": pygame.mixer.Sound("assets/sounds/pikachu_cry.mp3"),
         }
-        self.type_sounds = {
+
+        # Generic attack sounds categorized by Pokémon Type
+        self.type_sounds={
             "Normal": [
                 pygame.mixer.Sound("assets/sounds/normal_1.mp3"),
                 pygame.mixer.Sound("assets/sounds/normal_2.mp3"),
@@ -100,7 +114,9 @@ class SoundManager:
                 pygame.mixer.Sound("assets/sounds/fairy_3.mp3")
             ]
         }
-        self.sounds = {
+
+        # General UI and Gameplay sound effects
+        self.sounds={
             "click": pygame.mixer.Sound("assets/sounds/click.mp3"),
             "level_up": pygame.mixer.Sound("assets/sounds/level_up.mp3"),
             "victory": pygame.mixer.Sound("assets/sounds/victory.mp3"),
@@ -108,20 +124,24 @@ class SoundManager:
             "potion": pygame.mixer.Sound("assets/sounds/potion.mp3"),
             "missed_attack": pygame.mixer.Sound("assets/sounds/missed.wav"),
             "evolution": pygame.mixer.Sound("assets/sounds/evolution.mp3"),
-
         }
 
     def play(self, name):
+        """Plays a specific sound effect from the general sounds dictionary."""
         if name in self.sounds:
             self.sounds[name].play()
 
     def play_pokemon_sound(self, pokemon_obj):    
+        """
+        Determines and plays a sound for a Pokémon. 
+        Prioritizes unique cries, then type-specific sounds, falling back to 'Normal'.
+        """
         if pokemon_obj.name in self.pokemon_cries:
             self.pokemon_cries[pokemon_obj.name].play()
             return
 
-        p_type = pokemon_obj.type
-        if isinstance(p_type, list): p_type = p_type[0]
+        p_type=pokemon_obj.type
+        if isinstance(p_type, list): p_type=p_type[0]
 
         if p_type in self.type_sounds:
             random.choice(self.type_sounds[p_type]).play()
@@ -129,10 +149,12 @@ class SoundManager:
             random.choice(self.type_sounds["Normal"]).play()
 
     def play_music(self, file_path):
+        """Loads and plays background music on an infinite loop."""
         pygame.mixer.music.load(file_path)
         pygame.mixer.music.set_volume(0.3) 
         pygame.mixer.music.play(-1) 
 
     def stop_music(self):
+        """Stops all active sound channels and background music."""
         pygame.mixer.stop()
         pygame.mixer.music.stop()

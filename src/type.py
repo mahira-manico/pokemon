@@ -1,3 +1,16 @@
+"""
+type.py
+Contains the type effectiveness matrix for damage calculation.
+This nested dictionary defines multipliers for offensive moves 
+against various defensive types.
+"""
+
+# TYPE EFFECTIVENESS MATRIX
+# Format: TYPE_DAMAGE[Attacker_Type][Defender_Type] = Multiplier
+# Multipliers: 2 (Super Effective), 1 (Neutral), 0.75/0.5 (Not Very Effective), 0 (No Effect)
+
+
+
 TYPE_DAMAGE = {
     "Normal": {
         "Normal": 1, "Fire": 0.75, "Water": 0.75, "Electric": 0.75, "Grass": 0.75, 
