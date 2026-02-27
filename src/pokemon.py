@@ -67,9 +67,9 @@ class Pokemon:
        self.hp = max(0, int(self.hp))
 
     @staticmethod
-    def add_pokemon(name, type, level, hp, hp_max, attack, defense, sprite, evolution_id=None, evolution_level=None):
+    def add_pokemon(file_path, name, type, level, hp, attack, defense, sprite, evolution_id=None, evolution_level=None):
 
-        with open("data/pokemon.json", "r") as file:
+        with open(file_path, "r") as file:
           try:
             all_pokemon=json.load(file)
           except FileNotFoundError:
@@ -94,23 +94,18 @@ class Pokemon:
               "defense":defense,
               "evolution_id": evolution_id,
               "evolution_level": evolution_level,   
-              "sprite":sprite
+              "sprite":sprite,
+              "xp": 0
          }
           
           all_pokemon[new_id]=new_pokemon
 
-          try:
-              import shutil
-              shutil.copy("data/pokemon.json", "data/pokemon.json.backup")
-
-              with open("data/pokemon.json", "w") as file:
-                  json.dump(all_pokemon, file, indent=2)
-              
-              print(f"file succesfully added {name}, {new_id}")
+          try:    
+            with open(file_path, "w") as file:
+             json.dump(all_pokemon, file, indent=2)
+            return True
           
           except Exception as e:
-              print("error")
-              shutil.copy("data/pokemon.json", "data/pokemon.json.backup")
               return False
         
 

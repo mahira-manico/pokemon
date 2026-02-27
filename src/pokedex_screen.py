@@ -1,6 +1,6 @@
 import pygame
 import json
-from constant import *
+from src.constant import *
 
 class PokedexScreen:
     def __init__(self, screen):
@@ -31,8 +31,7 @@ class PokedexScreen:
         if not self.pokemon_list:
             text = self.font.render("No Pokémon seen yet!", True, (255, 255, 255))
             screen.blit(text, (500, 300))
-        else:
-          
+        else:         
             margin_x = 100
             margin_y = 120
             column_gap = 350 
@@ -45,10 +44,8 @@ class PokedexScreen:
                 
                 x = margin_x + (col * column_gap)
                 y = margin_y + (row * row_gap)
-
-              
+           
                 if x > 1100: continue 
-
             
                 try:
                     img = pygame.image.load(poke['sprite']).convert_alpha()
@@ -64,3 +61,6 @@ class PokedexScreen:
                 
                 name_txt = self.font.render(f"{poke['name']} - {status}", True, color)
                 screen.blit(name_txt, (x + 70, y))
+
+        back_hint = self.font.render("ESC to Return", True, (BLUE))
+        screen.blit(back_hint, (20, 680))

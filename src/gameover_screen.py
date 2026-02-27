@@ -1,5 +1,5 @@
 import pygame
-from constant import *
+from src.constant import *
 
 class GameOverScreen:
     def __init__(self, screen):

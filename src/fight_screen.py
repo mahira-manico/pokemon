@@ -1,14 +1,30 @@
 import pygame
-from fight import Fight
-from constant import *
+from src.fight import Fight
+from src.constant import *
 import random
 
 class FightScreen:
     def __init__(self, screen):
         self.screen = screen
+        
+        self.bg_paths = [
+            "assets/images/background_1.jpg",
+            "assets/images/background_2.jpg",
+            "assets/images/background_3.jpg",
+            "assets/images/background_4.jpg",
+            "assets/images/background_5.jpg",
+            "assets/images/background_6.jpg",
+            "assets/images/background_7.jpg",
+            "assets/images/background_8.jpg"
+        ]
+   
+        self.backgrounds = []
+        for path in self.bg_paths:
+            img = pygame.image.load(path).convert()
+            img = pygame.transform.smoothscale(img, (SCREEN_WIDTH, SCREEN_HEIGHT))
+            self.backgrounds.append(img)
 
-        original_bg = pygame.image.load("assets/images/fight_background.jpg").convert()
-        self.background = pygame.transform.smoothscale(original_bg, (1280, 720))
+        self.current_bg = self.backgrounds[0]
     
         button_width = 250
         button_height = 60
@@ -37,8 +53,10 @@ class FightScreen:
                 return "POTION"
             elif self.rect_escape.collidepoint(pos_m):
                 return "ESCAPE"
-        return None
+        return None 
 
+    def setup_new_fight(self):
+     self.current_bg = random.choice(self.backgrounds)
 
     def update(self):
   
@@ -63,7 +81,7 @@ class FightScreen:
         offset_x = random.randint(-self.shake_intensity, self.shake_intensity) if self.shake_intensity > 0 else 0
         offset_y = random.randint(-self.shake_intensity, self.shake_intensity) if self.shake_intensity > 0 else 0
 
-        screen.blit(self.background, (offset_x, offset_y))
+        screen.blit(self.current_bg, (offset_x, offset_y))
     
         if self.player_pokemon:
 

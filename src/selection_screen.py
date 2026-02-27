@@ -1,6 +1,6 @@
 import json
 import pygame
-from constant import *
+from src.constant import *
 
 class SelectionScreen:
     def __init__(self,screen,file_to_load):
@@ -29,27 +29,35 @@ class SelectionScreen:
         self.buttons_pokemon = []
         index_display = 0
         for pokemon_id, pokemon in self.all_pokemon.items():
-         if index_display == 0 or pokemon["name"] in captured_names:
-           column = 6
-           margin_x, margin_y = 50, 100
-           space_between = 100
+            is_starter = (pokemon_id == "1")
+            is_captured = (pokemon["name"] in captured_names)
+            is_custom = (int(pokemon_id) > 36)
+
+            if is_starter or is_captured or is_custom:
+
+             column = 6
+             margin_x, margin_y = 50, 100
+             space_between = 100
                 
-           x = margin_x + (index_display % column * space_between)
-           y = margin_y + (index_display // column * space_between)
+             x = margin_x + (index_display % column * space_between)
+             y = margin_y + (index_display // column * space_between)
                 
-           image = pygame.image.load(pokemon["sprite"])
-           image = pygame.transform.scale(image, (64, 64))
-           rect = pygame.Rect(x, y, 64, 64)
+             image = pygame.image.load(pokemon["sprite"])
+             image = pygame.transform.scale(image, (64, 64))
+             rect = pygame.Rect(x, y, 64, 64)
                 
-           self.buttons_pokemon.append({
+             self.buttons_pokemon.append({
                 "rect": rect,
                 "image": image,
                 "id": pokemon_id,
                 "data": pokemon
-             })
-           index_display += 1
+              })
+             index_display += 1
      
     def event_gestion(self,event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                return "BACK_TO_MENU"
    
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_position = pygame.mouse.get_pos()
@@ -111,10 +119,10 @@ class SelectionScreen:
             pygame.draw.rect(screen, (0, 200, 0), go_button)
             text_go = self.font_normal.render("FIGHT!", True, (255, 255, 255))
             screen.blit(text_go, (go_button.x + 50, go_button.y + 15))
+            
+        help_txt = self.font_normal.render("ESC to Return", True, (150, 150, 150))
+        screen.blit(help_txt, (1100, 680))
   
     def refresh(self):   
-        with open("data/pokemon.json", "r") as file:
-            self.all_pokemon = json.load(file)
-
         self.buttons_pokemon = []
         self.load_pokemon()

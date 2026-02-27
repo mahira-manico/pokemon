@@ -1,13 +1,15 @@
 import random
-from pokemon import *
-from type import *
+from src.pokemon import *
+from src.type import *
 import json
+from src.sound_management import SoundManager
 
 class Fight:
     def __init__(self,pokemon, all_data):
         self.pokemon=pokemon
         random_id=random.choice(list(all_data.keys()))
         self.opponent=Pokemon(random_id,all_data)
+        self.sound=SoundManager()
 
     def check_victory(self,msg):
         if not self.opponent.is_alive():
@@ -23,6 +25,7 @@ class Fight:
              msg="Oh no! This pokemon escaped!"
              return False,msg
        elif catching_chances>=50:
+             self.sound.play("capture")
              msg="Good Job! You caught this pokemon!"
              return True,msg
        
@@ -90,6 +93,7 @@ class Fight:
 
        else:
          msg="Oups! Attack missed"
+
        return msg
 
 
