@@ -85,7 +85,7 @@ class Pokemon:
         Increases XP and handles Level Up logic including stat growth 
         and evolution checks.
         """
-        self.xp += 500
+        self.xp += 50
         if self.xp >= 100:
             self.level += 1
             self.xp=0
